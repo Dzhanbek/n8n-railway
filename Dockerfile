@@ -1,19 +1,12 @@
-FROM node:18-alpine
+# Шаг 1: Указываем точную версию Node.js (LTS)
+FROM node:20-alpine
 
-ARG N8N_VERSION=1.95.3  # trigger build
+# Шаг 2: Устанавливаем n8n глобально внутри контейнера
+RUN npm install -g n8n
 
-RUN apk add --update graphicsmagick tzdata
-
-USER root
-
-RUN apk --update add --virtual build-dependencies python3 build-base && \
-    npm_config_user=root npm install --location=global n8n@${N8N_VERSION} && \
-    apk del build-dependencies
-
+# Шаг 3: Создаем рабочий каталог для данных n8n
 WORKDIR /data
 
-EXPOSE $PORT
-
-ENV N8N_USER_ID=root
-
-CMD export N8N_PORT=$PORT && n8n start
+# Шаг 4: Указываем команду по умолчанию для запуска n8n
+# Эта команда будет выполнена, если в Railway не указана другая
+CMD ["n8n"]
